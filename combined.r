@@ -5,9 +5,11 @@ library(gplots)
 classify_purpose = function(purpose)
 {  
   # PAST NEW
-  "car","Car financing"
-  "credit_card","Credit card refinancing"
+  #"car","Car financing"
   classified=as.character(purpose)
+  classified[classified=="Wedding expenses"]="wedding"
+  classified[classified=="Car financing"]="car"
+  classified[classified=="Credit card refinancing"]="credit_card"
   classified[classified=="Debt consolidation"]="debt_consolidation"
   classified[classified=="Home improvement"]="home_improvement"
   classified[classified=="Home buying"]="house"
@@ -54,6 +56,12 @@ combined$int_rate=as.numeric(
     , as.numeric(as.character(newloans$int_rate))
     )
   )
+combined$purpose=as.factor(
+  c(
+    as.character(pastloans$Loan.Purpose)
+    , classify_purpose(newloans$purpose)
+  )
+)
 
 
 
@@ -81,7 +89,7 @@ whitelist=c(
   ,"loan_amt.mod100"
   ,"loan_amt.mod500"
   ,"term"
-  #                               ,"Loan.Purpose"
+  ,"purpose"
   #                               ,"Delinquencies..Last.2.yrs."
   #                               ,"FICO.Range"
   ,"home_ownership" 
@@ -137,7 +145,9 @@ head(orderedloans[orderedloans$term=='36',
                   c('term'
                     ,'profitability'
                     ,'pred_default_rate'
+                    ,'int_rate'
                     ,'loan_amt'
+                    , "purpose"
                     #                      #, "funded_amnt"
                     ,'sub_grade'
                     , 'url'
