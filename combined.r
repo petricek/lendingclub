@@ -28,7 +28,6 @@ classify_purpose = function(purpose)
   return(classified)
 }
 
-
 # Load data
 pastloans=read.csv(file='LoanStats.csv', header=T)
 newloans=read.csv(file='InFunding2StatsNew.csv', header=T, quote="\"")
@@ -92,8 +91,8 @@ combined$loan_amt.mod1000z = as.numeric(0==as.numeric(combined$loan_amt %% 1000)
 #,"Revolving.Line.Utilization"
 #,"City"
 whitelist=c(
-  "addr_state"
-#   ,"sub_grade"
+  "sub_grade"
+  ,"addr_state"
   ,"loan_amt"
   ,"loan_amt.binned"
   ,"loan_amt.mod1000z"
@@ -104,28 +103,14 @@ whitelist=c(
   ,"purpose"
   ,"fico_range"
   ,"revolving_line_utilization"
-  #                               ,"Delinquencies..Last.2.yrs."
-  #                               ,"FICO.Range"
   ,"home_ownership" 
+  ,"emp_len"
+
+  #                               ,"Delinquencies..Last.2.yrs."
   #                               ,"Open.CREDIT.Lines"
   #                               ,"Inquiries.in.the.Last.6.Months" 
-  ,"emp_len"
 )
 
-# Individual predictors w/ CI
-# plotmeans(DV ~ loans$Amount.Requested.binned, data=loans)
-# plotmeans(DV ~ loans$Home.Ownership, data=loans)
-# plotmeans(DV ~ loans$Loan.Purpose, data=loans)
-# plotmeans(DV ~ loans$State, data=loans)
-# plotmeans(DV ~ loans$CREDIT.Grade, data=loans)
-# plotmeans(DV ~ loans$Open.CREDIT.Lines, data=loans)
-# plotmeans(DV ~ loans$Employment.Length, data=loans)
-# plotmeans(DV ~ loans$Inquiries.in.the.Last.6.Months, data=loans)
-# plotmeans(DV ~ loans$FICO.Range, data=loans)
-# plotmeans(DV ~ loans$Amount.Requested.mod500, data=loans)
-# plotmeans(DV ~ loans$Amount.Requested.mod100, data=loans)
-# plotmeans(DV ~ loans$Amount.Requested.mod1000z, data=loans)
-# plotmeans(DV ~ loans$Loan.Length, data=loans)
 
 traindata=combined[trainrows,]
 
@@ -163,8 +148,10 @@ head(orderedloans[orderedloans$term=='36',
                     ,'loan_amt'
                     , "purpose"
                     , "income"
-                    #                      #, "funded_amnt"
+                    , "funded_amnt"
                     ,'sub_grade'
                     , 'url'
                   )
-                  ])
+                  ]
+     , n=20
+)
