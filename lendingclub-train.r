@@ -4,9 +4,17 @@ library(gplots)
 
 # Load data
 loans=read.csv(file='LoanStats.csv', header=T)
+newloans=read.csv(file='InFunding2StatsNew.csv', header=T, quote="\"")
 
 loans=loans[loans$Status=='Charged Off' || loans$Status=='Fully Paid',]
 loans$DV=as.numeric(loans$Status=='Charged Off')
+
+# make sure factors are ok
+oldlength=nrow(loans)
+newlength=nrow(newloans)
+combinedfactor=as.factor(c(as.character(loans$CREDIT.Grade), as.character(newloans$sub_grade)))
+loans$CREDIT.Grade=combinedfactor[1:oldlength]
+newloans$sub_grade=combinedfactor[(oldlength+1):(oldlength+newlength)]
 
 # Derived features
 loans$Employment.Length.num   = as.numeric(loans$Employment.Length)
@@ -14,7 +22,6 @@ loans$Amount.Requested.binned = round(as.numeric(loans$Amount.Requested)/1000)*1
 loans$Amount.Requested.mod500 = as.numeric(loans$Amount.Requested %% 500)
 loans$Amount.Requested.mod100 = as.numeric(loans$Amount.Requested %% 100)
 loans$Amount.Requested.mod1000z = as.numeric(0==as.numeric(loans$Amount.Requested %% 1000))
-
 #,"Debt.To.Income.Ratio"
 #,"Revolving.Line.Utilization"
 #,"Employment.Length")
@@ -36,11 +43,6 @@ whitelist=c(
   ,"Employment.Length"
 )
 
-# md=mean(loans$DV)
-# loans_ss=loans[(runif(nrow(loans)) <= md/(1-md)) | (loans$DV==1),]
-
-
-
 # Individual predictors w/ CI
 # plotmeans(DV ~ loans$Amount.Requested.binned, data=loans)
 # plotmeans(DV ~ loans$Home.Ownership, data=loans)
@@ -56,10 +58,12 @@ whitelist=c(
 # plotmeans(DV ~ loans$Amount.Requested.mod1000z, data=loans)
 # plotmeans(DV ~ loans$Loan.Length, data=loans)
 
+traindata=loans[,c(whitelist,'DV')]
+
 # Fit GBM
 gbmmodel = gbm(DV ~ .
-               , data=loans[,c(whitelist,'DV')],
-               distribution="bernoulli"
+               , data=traindata
+               , distribution="bernoulli"
                , n.trees = 100
                , shrinkage = 0.01
                , interaction.depth = 5
@@ -68,5 +72,5 @@ gbmmodel = gbm(DV ~ .
                , keep.data=TRUE
                , verbose=TRUE
 )
-save(file='gbm.model', list='gbmmodel')
+save(file='gbm.model', list=c('gbmmodel','traindata'))
 summary(gbmmodel)
