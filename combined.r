@@ -62,8 +62,19 @@ combined$purpose=as.factor(
     , classify_purpose(newloans$purpose)
   )
 )
-
-
+combined$income=c(as.numeric(pastloans$Monthly.Income)
+                  , as.numeric(newloans$annual_inc/12)
+                  )
+combined$fico_range=as.factor(
+  c(
+    as.character(pastloans$FICO.Range)
+    , paste(newloans$fico_range_low,newloans$fico_range_high,sep='-')
+  )
+)
+combined$revolving_line_utilization=x=c(
+  as.numeric(substr(as.character(pastloans$Revolving.Line.Utilization),1,nchar(as.character(pastloans$Revolving.Line.Utilization))-1))/100
+  ,as.numeric(as.character(newloans$revol_util))
+  )
 
 # New only
 combined$url=''
@@ -82,14 +93,17 @@ combined$loan_amt.mod1000z = as.numeric(0==as.numeric(combined$loan_amt %% 1000)
 #,"City"
 whitelist=c(
   "addr_state"
-  ,"sub_grade"
+#   ,"sub_grade"
   ,"loan_amt"
   ,"loan_amt.binned"
   ,"loan_amt.mod1000z"
   ,"loan_amt.mod100"
   ,"loan_amt.mod500"
   ,"term"
+  ,"income"
   ,"purpose"
+  ,"fico_range"
+  ,"revolving_line_utilization"
   #                               ,"Delinquencies..Last.2.yrs."
   #                               ,"FICO.Range"
   ,"home_ownership" 
@@ -139,7 +153,7 @@ testdata$pred_default_rate=predict.gbm(gbmmodel
                                        )
 # pdefault * (-1) + (1-pdefault) * (1) * interest = 0 for "break even rate"
 # interest = pdefault / (1-pdefault)
-testdata$profitability=testdata$int_rate-(testdata$pred_default_rate/(1-testdata$pred_default_rate))
+testdata$profitability=(testdata$int_rate/100)-(testdata$pred_default_rate/(1-testdata$pred_default_rate))
 orderedloans = testdata[order(testdata$profitability,decreasing=T),]
 head(orderedloans[orderedloans$term=='36',
                   c('term'
@@ -148,6 +162,7 @@ head(orderedloans[orderedloans$term=='36',
                     ,'int_rate'
                     ,'loan_amt'
                     , "purpose"
+                    , "income"
                     #                      #, "funded_amnt"
                     ,'sub_grade'
                     , 'url'
