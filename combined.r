@@ -153,5 +153,5 @@ head(orderedloans[orderedloans$term=='36',
                     , 'url'
                   )
                   ]
-     , n=20
+     , n=200
 )
