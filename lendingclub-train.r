@@ -4,7 +4,7 @@ library(gplots)
 
 # Load data
 loans=read.csv(file='LoanStats.csv', header=T)
-newloans=read.csv(file='InFunding2StatsNew.csv', header=T, quote="\"")
+newloans=read.csv(file='InFundingStats3.csv', header=T, quote="\"")
 
 loans=loans[loans$Status=='Charged Off' || loans$Status=='Fully Paid',]
 loans$DV=as.numeric(loans$Status=='Charged Off')

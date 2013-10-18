@@ -2,7 +2,7 @@ library(gbm)
 library(gplots)
 
 # Load data
-newloans=read.csv(file='InFunding2StatsNew.csv', header=T, quote="\"")
+newloans=read.csv(file='InFundingStats3.csv', header=T, quote="\"")
 load(file='gbm.model')
 
 #,"Debt.To.Income.Ratio"
