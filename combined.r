@@ -70,8 +70,8 @@ combined$fico_range=as.factor(
     , paste(newloans$fico_range_low,newloans$fico_range_high,sep='-')
   )
 )
-combined$revolving_line_utilization=x=c(
-  as.numeric(substr(as.character(pastloans$Revolving.Line.Utilization),1,nchar(as.character(pastloans$Revolving.Line.Utilization))-1))/100
+combined$revolving_line_utilization=c(
+  as.numeric(substr(as.character(pastloans$Revolving.Line.Utilization),1,nchar(as.character(pastloans$Revolving.Line.Utilization))-1))
   ,as.numeric(as.character(newloans$revol_util))
   )
 
