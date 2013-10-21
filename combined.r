@@ -32,7 +32,7 @@ classify_purpose = function(purpose)
 pastloans=read.csv(file='LoanStats.csv', header=T)
 newloans=read.csv(file='InFundingStats3.csv', header=T, quote="\"")
 
-pastloans=pastloans[pastloans$Status=='Charged Off' || pastloans$Status=='Fully Paid',]
+pastloans=pastloans[pastloans$Status=='Charged Off' | pastloans$Status=='Fully Paid',]
 pastloans$DV=as.numeric(pastloans$Status=='Charged Off')
 
 # make sure factors are ok
