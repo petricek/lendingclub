@@ -32,7 +32,7 @@ classify_purpose = function(purpose)
 pastloans=read.csv(file='LoanStats.csv', header=T)
 newloans=read.csv(file='InFundingStats3.csv', header=T, quote="\"")
 
-pastloans=pastloans[pastloans$Status=='Charged Off' || pastloans$Status=='Fully Paid',]
+pastloans=pastloans[pastloans$Status=='Charged Off' | pastloans$Status=='Fully Paid',]
 pastloans$DV=as.numeric(pastloans$Status=='Charged Off')
 
 # make sure factors are ok
@@ -70,8 +70,8 @@ combined$fico_range=as.factor(
     , paste(newloans$fico_range_low,newloans$fico_range_high,sep='-')
   )
 )
-combined$revolving_line_utilization=x=c(
-  as.numeric(substr(as.character(pastloans$Revolving.Line.Utilization),1,nchar(as.character(pastloans$Revolving.Line.Utilization))-1))/100
+combined$revolving_line_utilization=c(
+  as.numeric(substr(as.character(pastloans$Revolving.Line.Utilization),1,nchar(as.character(pastloans$Revolving.Line.Utilization))-1))
   ,as.numeric(as.character(newloans$revol_util))
   )
 
